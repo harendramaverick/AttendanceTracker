@@ -1,5 +1,6 @@
 package com.microsoft.attendancetracker
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +57,7 @@ fun AttendanceScreen(
     // NEW STATES TO SHOW/HIDE CARDS
     var showCheckInCard by remember { mutableStateOf(false) }
     var showCheckOutCard by remember { mutableStateOf(false) }
-
+    val activity = LocalContext.current as Activity
     Scaffold(
         topBar = {
             TopAppBar(
@@ -67,7 +69,9 @@ fun AttendanceScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(
+                        onClick = {activity.finish()}
+                    ) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },

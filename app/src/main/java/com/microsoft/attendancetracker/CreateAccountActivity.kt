@@ -23,22 +23,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
+import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class CreateAccountActivity : ComponentActivity() {
 
-    private var isDarkTheme by mutableStateOf(false)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-            AttendanceTrackerTheme(useDarkTheme = isDarkTheme) {
-                CreateAccountScreen(
-                    onBack = {},
-                    onLoginClick = { isDarkTheme = !isDarkTheme })
-            }
+            CreateAccountMainScreen()
         }
+    }
+}
+
+
+@Composable
+fun CreateAccountMainScreen()
+{
+    val themeViewModel: ThemeViewModel = viewModel()
+    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
+        CreateAccountScreen(
+            onBack = {},
+            onLoginClick = {})
     }
 }
 

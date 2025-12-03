@@ -1,5 +1,6 @@
 package com.microsoft.attendancetracker
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,36 +10,44 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
+import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class LoginActivity : ComponentActivity() {
 
     // IMPORTANT: Activity-level state (not inside Composable)
-    private var isDarkTheme by mutableStateOf(false)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
+            LoginMainScreen()
+        }
+    }
+}
 
-            AttendanceTrackerTheme(useDarkTheme = isDarkTheme) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    LoginScreen(
-                        onLoginClicked = {
-                            isDarkTheme = !isDarkTheme
-                        }
-                    )
+@Composable
+fun LoginMainScreen ()
+{
+    val themeViewModel: ThemeViewModel = viewModel()
+    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            LoginScreen(
+                onLoginClicked = {
+                    // isDarkTheme = !isDarkTheme
+                    themeViewModel.toggleTheme()
                 }
-            }
+            )
         }
     }
 }
@@ -48,7 +57,7 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +104,11 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
-            onClick = { onLoginClicked() },
+            onClick = {
+                        onLoginClicked()
+                        val intent = Intent(context, DashboardActivity::class.java)
+                        context.startActivity(intent)
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(54.dp)
@@ -125,7 +138,7 @@ fun PreviewLoginLight() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen(onLoginClicked = {})
+            LoginScreen( onLoginClicked = {})
         }
     }
 }
