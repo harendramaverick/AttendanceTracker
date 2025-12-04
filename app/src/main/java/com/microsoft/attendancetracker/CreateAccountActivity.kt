@@ -31,7 +31,6 @@ import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class CreateAccountActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -212,7 +211,7 @@ fun CreateAccountScreen(
 
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
-fun PreviewLight() {
+fun PreviewLightReport() {
     AttendanceTrackerTheme(useDarkTheme = false) {
         CreateAccountScreen()
     }
@@ -220,7 +219,7 @@ fun PreviewLight() {
 
 @Preview(showBackground = true, name = "Dark Mode")
 @Composable
-fun PreviewDark() {
+fun PreviewDarkReport() {
     AttendanceTrackerTheme(useDarkTheme = true) {
         CreateAccountScreen()
     }

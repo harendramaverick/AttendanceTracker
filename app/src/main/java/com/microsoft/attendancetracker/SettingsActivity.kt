@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.microsoft.attendancetracker.component.BottomNavBar
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
@@ -47,6 +48,10 @@ fun SettingScreenView()
     val activity = LocalContext.current as? Activity
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
+        Scaffold(
+            bottomBar = { BottomNavBar(4) }
+        )
+        {
         SettingsScreen(
             darkTheme = uDarkTheme,
             onThemeToggle = {
@@ -57,8 +62,8 @@ fun SettingScreenView()
                 activity?.finish()
             }
         )
+        }
     }
-
 }
 
 
@@ -131,6 +136,8 @@ fun SettingsScreen(
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center
                     )
                 }
+
+                item{ Spacer( modifier = Modifier.height(90.dp ))}
             }
         }
     }

@@ -26,18 +26,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
+import com.microsoft.attendancetracker.component.BottomNavBar
 
 class DashboardActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             DashboardMainScreen()
         }
     }
 }
-
 
 @Composable
 fun DashboardMainScreen()
@@ -51,7 +50,6 @@ fun DashboardMainScreen()
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +76,7 @@ fun DashboardScreen(
                 }
             )
         },
-        bottomBar = { BottomNavBar() }
+        bottomBar = { BottomNavBar(1) }
     ) { padding ->
         DashboardContent(modifier = Modifier.padding(padding))
     }
@@ -283,42 +281,6 @@ fun AbsenceItem(name: String, date: String, status: String) {
     }
 }
 
-@Composable
-fun BottomNavBar() {
-    val context = LocalContext.current
-    NavigationBar {
-        NavigationBarItem(
-            selected = true,
-            onClick = { },
-            icon = { Icon(Icons.Default.Home, "") },
-            label = { Text("Home") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = { },
-            icon = { Icon(Icons.Default.BarChart, "") },
-            label = { Text("Reports") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {
-                val intent = Intent(context, AttendanceActivity::class.java)
-                context.startActivity(intent)
-            },
-            icon = { Icon(Icons.Default.Person, "") },
-            label = { Text("Students") }
-        )
-        NavigationBarItem(
-            selected = false,
-            onClick = {
-                val intent = Intent(context, SettingsActivity::class.java)
-                context.startActivity(intent)
-            },
-            icon = { Icon(Icons.Default.Settings, "") },
-            label = { Text("Settings") }
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

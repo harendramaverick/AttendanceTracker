@@ -23,19 +23,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.microsoft.attendancetracker.component.BottomNavBar
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class AttendanceActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             AttendanceScreenMain()
         }
     }
-
 }
 
 @Composable
@@ -90,7 +88,8 @@ fun AttendanceScreen(
                     }
                 }
             )
-        }
+        },
+        bottomBar = { BottomNavBar(3) }
     ) { padding ->
 
         Column(
@@ -193,6 +192,8 @@ fun AttendanceScreen(
             }
         }
     }
+
+
 }
 
 @Composable
