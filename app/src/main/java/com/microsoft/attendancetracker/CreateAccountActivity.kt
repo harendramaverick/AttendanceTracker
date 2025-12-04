@@ -1,5 +1,7 @@
 package com.microsoft.attendancetracker
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +18,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -62,6 +65,8 @@ fun CreateAccountScreen(
 
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val activity = context as? Activity
 
     Surface(modifier = Modifier.fillMaxSize()) {
 
@@ -77,7 +82,10 @@ fun CreateAccountScreen(
                 contentDescription = "Back",
                 modifier = Modifier
                     .size(32.dp)
-                    .clickable { onBack() }
+                    .clickable {
+                        onBack()
+                        activity?.finish()
+                    }
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -184,12 +192,18 @@ fun CreateAccountScreen(
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center) {
 
-                Text("Already have an account? ")
+                Text("Already have an account? ",
+                    modifier = Modifier.clickable{
+                    activity?.finish()
+                })
 
                 Text(
                     text = "Log In",
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { onLoginClick() }
+                    modifier = Modifier.clickable {
+                        onLoginClick()
+                        activity?.finish()
+                    }
                 )
             }
         }

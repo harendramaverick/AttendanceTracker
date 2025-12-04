@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
@@ -97,7 +98,10 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
         Spacer(modifier = Modifier.height(12.dp))
 
         TextButton(onClick = {}) {
-            Text("Forgot Password?")
+            Text("Forgot Password?", modifier = Modifier.clickable {
+                val intent = Intent(context, ForgotPasswordActivity::class.java)
+                context.startActivity(intent)
+            })
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -105,7 +109,7 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
         Button(
             onClick = {
                         onLoginClicked()
-                        val intent = Intent(context, SettingsActivity::class.java)
+                        val intent = Intent(context, DashboardActivity::class.java)
                         context.startActivity(intent)
                       },
             modifier = Modifier
@@ -119,7 +123,11 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
 
         ClickableText(
             text = AnnotatedString("Don't have an account? Sign Up"),
-            onClick = { onLoginClicked() },
+            onClick = {
+                        onLoginClicked()
+                        val intent = Intent(context, CreateAccountActivity::class.java)
+                        context.startActivity(intent)
+                      },
             modifier = Modifier.padding(bottom = 24.dp),
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 16.sp,

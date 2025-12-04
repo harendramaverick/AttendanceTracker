@@ -1,6 +1,7 @@
 package com.microsoft.attendancetracker
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,7 +47,7 @@ fun DashboardMainScreen()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
         DashboardScreen(
-            onBackToggleTheme = { }//darkTheme = !darkTheme } // back button toggles theme
+            onBackToggleTheme = { themeViewModel.toggleTheme() }
         )
     }
 }
@@ -284,6 +285,7 @@ fun AbsenceItem(name: String, date: String, status: String) {
 
 @Composable
 fun BottomNavBar() {
+    val context = LocalContext.current
     NavigationBar {
         NavigationBarItem(
             selected = true,
@@ -299,13 +301,19 @@ fun BottomNavBar() {
         )
         NavigationBarItem(
             selected = false,
-            onClick = { },
+            onClick = {
+                val intent = Intent(context, AttendanceActivity::class.java)
+                context.startActivity(intent)
+            },
             icon = { Icon(Icons.Default.Person, "") },
             label = { Text("Students") }
         )
         NavigationBarItem(
             selected = false,
-            onClick = { },
+            onClick = {
+                val intent = Intent(context, SettingsActivity::class.java)
+                context.startActivity(intent)
+            },
             icon = { Icon(Icons.Default.Settings, "") },
             label = { Text("Settings") }
         )

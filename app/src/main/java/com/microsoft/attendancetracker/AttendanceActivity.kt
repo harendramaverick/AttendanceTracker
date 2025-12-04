@@ -22,27 +22,35 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
-
+import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class AttendanceActivity : ComponentActivity() {
-
-    private var isDarkTheme by mutableStateOf(false)
-    private var iSCheckedInState by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AttendanceTrackerTheme(useDarkTheme = isDarkTheme) {
-                AttendanceScreen(
-                    isCheckedIn = iSCheckedInState,
-                    onCheckIn = { iSCheckedInState = true },
-                    onCheckOut = { iSCheckedInState = false },
-                    onToggleTheme = { isDarkTheme = !isDarkTheme }
-                )
-            }
+            AttendanceScreenMain()
         }
+    }
+
+}
+
+@Composable
+fun AttendanceScreenMain()
+{
+    var iSCheckedInState by remember {  mutableStateOf(false) }
+    val themeViewModel: ThemeViewModel = viewModel()
+    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
+        AttendanceScreen(
+            isCheckedIn =   iSCheckedInState,
+            onCheckIn   = { iSCheckedInState = true },
+            onCheckOut  = { iSCheckedInState = false },
+            onToggleTheme = { themeViewModel.toggleTheme() }
+        )
     }
 }
 
