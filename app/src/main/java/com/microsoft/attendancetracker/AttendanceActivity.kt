@@ -2,6 +2,7 @@ package com.microsoft.attendancetracker
 
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -27,7 +28,7 @@ import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 class AttendanceActivity : ComponentActivity() {
 
     private var isDarkTheme by mutableStateOf(false)
-    private var isCheckedIn by mutableStateOf(false)
+    private var iSCheckedInState by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +36,9 @@ class AttendanceActivity : ComponentActivity() {
         setContent {
             AttendanceTrackerTheme(useDarkTheme = isDarkTheme) {
                 AttendanceScreen(
-                    isCheckedIn = isCheckedIn,
-                    onCheckIn = { isCheckedIn = true },
-                    onCheckOut = { isCheckedIn = false },
+                    isCheckedIn = iSCheckedInState,
+                    onCheckIn = { iSCheckedInState = true },
+                    onCheckOut = { iSCheckedInState = false },
                     onToggleTheme = { isDarkTheme = !isDarkTheme }
                 )
             }
@@ -57,7 +58,7 @@ fun AttendanceScreen(
     // NEW STATES TO SHOW/HIDE CARDS
     var showCheckInCard by remember { mutableStateOf(false) }
     var showCheckOutCard by remember { mutableStateOf(false) }
-    val activity = LocalContext.current as Activity
+    val activity = LocalContext.current as? Activity
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,7 +71,7 @@ fun AttendanceScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = {activity.finish()}
+                        onClick = {activity?.finish()}
                     ) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
@@ -116,6 +117,7 @@ fun AttendanceScreen(
                 Button(
                     onClick = {
                         onCheckIn()
+                        Log.d("MY_LOG", isCheckedIn.toString());
                         showCheckInCard = !showCheckInCard
                     },
                     enabled = !isCheckedIn,

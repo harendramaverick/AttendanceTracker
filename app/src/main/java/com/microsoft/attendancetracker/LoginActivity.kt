@@ -45,7 +45,6 @@ fun LoginMainScreen ()
             LoginScreen(
                 onLoginClicked = {
                     // isDarkTheme = !isDarkTheme
-                    themeViewModel.toggleTheme()
                 }
             )
         }
@@ -106,7 +105,7 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
         Button(
             onClick = {
                         onLoginClicked()
-                        val intent = Intent(context, DashboardActivity::class.java)
+                        val intent = Intent(context, SettingsActivity::class.java)
                         context.startActivity(intent)
                       },
             modifier = Modifier
