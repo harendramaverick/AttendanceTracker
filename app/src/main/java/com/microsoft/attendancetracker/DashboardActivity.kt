@@ -55,6 +55,7 @@ fun DashboardScreen() {
     val context = LocalContext.current
     val activity = context as? Activity
 
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -174,7 +175,10 @@ fun StatCard(
 ) {
     Card(
         modifier = modifier.height(160.dp),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Column(Modifier.padding(16.dp)) {
 
@@ -202,7 +206,10 @@ fun AttendanceTrendsCard() {
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Column(Modifier.padding(16.dp)) {
 
@@ -246,7 +253,10 @@ fun AbsenceItem(name: String, date: String, status: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
     ) {
         Row(
             Modifier
