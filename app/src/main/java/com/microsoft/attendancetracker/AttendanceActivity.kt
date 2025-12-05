@@ -45,9 +45,8 @@ fun AttendanceScreenMain()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
         AttendanceScreen(
             isCheckedIn =   iSCheckedInState,
-            onCheckIn   = { iSCheckedInState = true },
-            onCheckOut  = { iSCheckedInState = false },
-            onToggleTheme = { themeViewModel.toggleTheme() }
+            onCheckIn   = { iSCheckedInState = true  },
+            onCheckOut  = { iSCheckedInState = false }
         )
     }
 }
@@ -57,8 +56,7 @@ fun AttendanceScreenMain()
 fun AttendanceScreen(
     isCheckedIn: Boolean,
     onCheckIn: () -> Unit,
-    onCheckOut: () -> Unit,
-    onToggleTheme: () -> Unit
+    onCheckOut: () -> Unit
 ) {
 
     // NEW STATES TO SHOW/HIDE CARDS
@@ -83,7 +81,10 @@ fun AttendanceScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = onToggleTheme) {
+                    IconButton(
+                        onClick = {
+                        }
+                    ) {
                         Icon(Icons.Default.MoreVert, contentDescription = "Menu")
                     }
                 }
@@ -256,8 +257,7 @@ fun PreviewLight1() {
         AttendanceScreen(
             isCheckedIn = false,
             onCheckIn = {},
-            onCheckOut = {},
-            onToggleTheme = {}
+            onCheckOut = {}
         )
     }
 }
@@ -269,8 +269,7 @@ fun PreviewDark2() {
         AttendanceScreen(
             isCheckedIn = false,
             onCheckIn = {},
-            onCheckOut = {},
-            onToggleTheme = {}
+            onCheckOut = {}
         )
     }
 }

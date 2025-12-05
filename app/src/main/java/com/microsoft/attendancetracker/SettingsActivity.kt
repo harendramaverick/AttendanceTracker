@@ -52,16 +52,18 @@ fun SettingScreenView()
             bottomBar = { BottomNavBar(4) }
         )
         {
-        SettingsScreen(
-            darkTheme = uDarkTheme,
-            onThemeToggle = {
-                themeViewModel.toggleTheme()
-                Log.d("SettingsActivity", "Theme toggled: $uDarkTheme")
-            },
-            onBack = {
-                activity?.finish()
-            }
-        )
+            padding ->
+            SettingsScreen(
+                darkTheme = uDarkTheme,
+                onThemeToggle = {
+                    themeViewModel.toggleTheme()
+                    Log.d("SettingsActivity", "Theme toggled: $uDarkTheme")
+                },
+                onBack = {
+                    activity?.finish()
+                },
+                modifier = Modifier.padding(padding)
+            )
         }
     }
 }
@@ -72,7 +74,8 @@ fun SettingScreenView()
 fun SettingsScreen(
     darkTheme: Boolean,
     onThemeToggle: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     Surface(

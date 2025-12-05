@@ -54,7 +54,7 @@ fun AttendanceReportScreenMain()
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Dashboard") },
+                    title = { Text("Attendance Reports") },
                     navigationIcon = {
                         IconButton(onClick = {
                             activity?.finish()
@@ -69,7 +69,8 @@ fun AttendanceReportScreenMain()
             },
             bottomBar = { BottomNavBar(2) }
         ) {
-            AttendanceReportScreen()
+            padding->
+            AttendanceReportScreen(modifier = Modifier.padding(padding))
         }
         }
     }
@@ -79,7 +80,7 @@ fun AttendanceReportScreenMain()
 //                           MAIN SCREEN UI
 // ------------------------------------------------------------------------
 @Composable
-fun AttendanceReportScreen()
+fun AttendanceReportScreen(modifier: Modifier = Modifier)
 {
     val context = LocalContext.current
     val activity = context as? Activity
@@ -92,33 +93,7 @@ fun AttendanceReportScreen()
                 .padding(16.dp)
         ) {
 
-
-            // TOP BAR -----------------------------------------------------------
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = {
-                    activity?.finish()
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Toggle Theme"
-                    )
-                }
-
-                Spacer(Modifier.width(20.dp))
-
-                Text(
-                    "Attendance Reports",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-            }
-
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(120.dp))
 
             // TITLE ---------------------------------------------------------------
             Text(
@@ -207,7 +182,7 @@ fun AttendanceReportScreen()
             StudentRow("Cody Fisher", "August 28, 2024", "Absent", Color(0xFFFF9800))
             StudentRow("Jacob Jones", "August 27, 2024", "Late", Color(0xFFFF5722))
 
-            Spacer(Modifier.height(30.dp))
+            Spacer(Modifier.height(90.dp))
         }
 }
 

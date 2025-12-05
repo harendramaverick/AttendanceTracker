@@ -45,17 +45,13 @@ fun DashboardMainScreen()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
-        DashboardScreen(
-            onBackToggleTheme = { themeViewModel.toggleTheme() }
-        )
+        DashboardScreen()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(
-    onBackToggleTheme: () -> Unit
-) {
+fun DashboardScreen() {
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -65,7 +61,6 @@ fun DashboardScreen(
                 title = { Text("Dashboard") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        onBackToggleTheme()
                         activity?.finish()
                     }) {
                         Icon(
@@ -289,7 +284,7 @@ fun LightPreview() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            DashboardScreen(onBackToggleTheme = {})
+            DashboardScreen()
         }
     }
 }
@@ -301,7 +296,7 @@ fun DarkPreview() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            DashboardScreen(onBackToggleTheme = {})
+            DashboardScreen()
         }
     }
 }
