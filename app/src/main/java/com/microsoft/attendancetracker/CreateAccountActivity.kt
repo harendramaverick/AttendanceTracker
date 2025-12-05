@@ -1,8 +1,8 @@
 package com.microsoft.attendancetracker
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -27,33 +27,55 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
+import com.microsoft.attendancetracker.database.AppDatabase
+import com.microsoft.attendancetracker.database.CreateAccountVMFactory
+import com.microsoft.attendancetracker.viewmodel.CreateAccountViewModel
+import com.microsoft.attendancetracker.database.UserRepository
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class CreateAccountActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Create DB
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "attendance_database"
+        ).build()
+
+        val repo = UserRepository(db.userDao())
+        val vmFactory = CreateAccountVMFactory(repo)
+
         setContent {
-            CreateAccountMainScreen()
+            val createAccountVM: CreateAccountViewModel =
+                viewModel(factory = vmFactory)
+
+            CreateAccountMainScreen(createAccountVM)
         }
     }
 }
 
 
 @Composable
-fun CreateAccountMainScreen()
+fun CreateAccountMainScreen(viewModel: CreateAccountViewModel)
 {
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
         CreateAccountScreen(
+            viewModel,
             onBack = {},
-            onLoginClick = {})
+            onLoginClick = {}
+        )
     }
 }
 
 @Composable
 fun CreateAccountScreen(
+    viewModel: CreateAccountViewModel,
     onBack: () -> Unit = {},
     onLoginClick: () -> Unit = {}
 ) {
@@ -64,8 +86,14 @@ fun CreateAccountScreen(
 
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
+    val success by viewModel.success.collectAsState()
     val context = LocalContext.current
     val activity = context as? Activity
+
+    if (success) {
+        Toast.makeText(context, "Account Created!", Toast.LENGTH_SHORT).show()
+        activity?.finish()
+    }
 
     Surface(modifier = Modifier.fillMaxSize()) {
 
@@ -176,7 +204,13 @@ fun CreateAccountScreen(
 
             // Create Account Button
             Button(
-                onClick = { onLoginClick() },
+                onClick = {
+                                if (password == confirmPassword) {
+                                    viewModel.createAccount(fullName, email, password)
+                                } else {
+                                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                                }
+                          },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
@@ -209,11 +243,21 @@ fun CreateAccountScreen(
     }
 }
 
+/*
+class UserRepositoryFake : UserRepository(null)
+
+class PreviewCreateAccountViewModel : CreateAccountViewModel(
+    UserRepositoryFake()
+)
+
+
+
+
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
 fun PreviewLightReport() {
     AttendanceTrackerTheme(useDarkTheme = false) {
-        CreateAccountScreen()
+        CreateAccountScreen(viewModel = PreviewCreateAccountViewModel())
     }
 }
 
@@ -221,6 +265,7 @@ fun PreviewLightReport() {
 @Composable
 fun PreviewDarkReport() {
     AttendanceTrackerTheme(useDarkTheme = true) {
-        CreateAccountScreen()
+        CreateAccountScreen(viewModel = PreviewCreateAccountViewModel())
     }
 }
+*/

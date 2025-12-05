@@ -1,7 +1,9 @@
 package com.microsoft.attendancetracker
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -19,7 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
+import com.microsoft.attendancetracker.database.AppDatabase
+import com.microsoft.attendancetracker.database.LoginVMFactory
+import com.microsoft.attendancetracker.database.UserRepository
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
+import com.microsoft.attendancetracker.viewmodel.LoginViewModel
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class LoginActivity : ComponentActivity() {
@@ -27,14 +34,25 @@ class LoginActivity : ComponentActivity() {
     // IMPORTANT: Activity-level state (not inside Composable)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Create DB
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "attendance_database"
+        ).build()
+
+        val repo = UserRepository(db.userDao())
+        val vmFactory = LoginVMFactory(repo)
+
         setContent {
-            LoginMainScreen()
+            val loginVM: LoginViewModel = viewModel(factory = vmFactory)
+            LoginMainScreen(loginVM)
         }
     }
 }
 
 @Composable
-fun LoginMainScreen ()
+fun LoginMainScreen (viewModel: LoginViewModel)
 {
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
@@ -43,21 +61,23 @@ fun LoginMainScreen ()
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            LoginScreen(
-                onLoginClicked = {
-                    // isDarkTheme = !isDarkTheme
-                }
-            )
+            LoginScreen(viewModel)
         }
     }
 }
 
 @Composable
-fun LoginScreen(onLoginClicked: () -> Unit) {
+fun LoginScreen(viewModel: LoginViewModel) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val loginSuccess by viewModel.loginSuccess.collectAsState()
+    val loginError by viewModel.loginError.collectAsState()
     val context = LocalContext.current
+
+    Log.d("LoginScreen", "loginSuccess: $loginSuccess")
+    Log.d("LoginScreen", "loginError: $loginError")
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -106,11 +126,20 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
 
         Spacer(modifier = Modifier.height(12.dp))
 
+        // Error message
+        if (loginError.isNotEmpty()) {
+            Text(loginError, color = MaterialTheme.colorScheme.error)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         Button(
             onClick = {
-                        onLoginClicked()
-                        val intent = Intent(context, DashboardActivity::class.java)
-                        context.startActivity(intent)
+                        viewModel.login(email, password)
+                        if (loginSuccess) {
+                            val intent = Intent(context, DashboardActivity::class.java)
+                            context.startActivity(intent)
+                        }
                       },
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,7 +153,6 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
         ClickableText(
             text = AnnotatedString("Don't have an account? Sign Up"),
             onClick = {
-                        onLoginClicked()
                         val intent = Intent(context, CreateAccountActivity::class.java)
                         context.startActivity(intent)
                       },
@@ -138,6 +166,7 @@ fun LoginScreen(onLoginClicked: () -> Unit) {
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginLight() {
@@ -145,7 +174,7 @@ fun PreviewLoginLight() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen( onLoginClicked = {})
+            LoginScreen()
         }
     }
 }
@@ -157,7 +186,8 @@ fun PreviewLoginDark() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen(onLoginClicked = {})
+            LoginScreen()
         }
     }
 }
+*/

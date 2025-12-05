@@ -268,8 +268,12 @@ fun ThemeRow(darkTheme: Boolean, onToggle: () -> Unit) {
 
 @Composable
 fun LogoutButton() {
+    val context = LocalContext.current
+    val activity = context as? Activity
     Button(
-        onClick = { },
+        onClick = {
+            activity?.finish()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp),
