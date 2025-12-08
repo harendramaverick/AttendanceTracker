@@ -1,6 +1,5 @@
-package com.microsoft.attendancetracker.activity
+package com.microsoft.attendancetracker
 
-import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -26,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
 import com.microsoft.attendancetracker.component.Logout

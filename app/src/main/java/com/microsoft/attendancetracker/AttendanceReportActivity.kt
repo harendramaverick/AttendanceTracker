@@ -1,4 +1,4 @@
-package com.microsoft.attendancetracker.activity
+package com.microsoft.attendancetracker
 
 import android.R
 import android.app.Activity

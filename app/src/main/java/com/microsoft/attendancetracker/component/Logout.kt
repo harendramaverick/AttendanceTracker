@@ -3,9 +3,7 @@ package com.microsoft.attendancetracker.component
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.microsoft.attendancetracker.activity.LoginActivity
+import com.microsoft.attendancetracker.LoginActivity
 
 
 fun Logout(context: Context) {

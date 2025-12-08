@@ -13,11 +13,11 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.microsoft.attendancetracker.activity.AttendanceActivity
-import com.microsoft.attendancetracker.activity.AttendanceReportActivity
-import com.microsoft.attendancetracker.activity.DashboardActivity
+import com.microsoft.attendancetracker.AttendanceActivity
+import com.microsoft.attendancetracker.AttendanceReportActivity
+import com.microsoft.attendancetracker.DashboardActivity
 import com.microsoft.attendancetracker.R
-import com.microsoft.attendancetracker.activity.SettingsActivity
+import com.microsoft.attendancetracker.SettingsActivity
 
 @Composable
 fun BottomNavBar(index : Int) {

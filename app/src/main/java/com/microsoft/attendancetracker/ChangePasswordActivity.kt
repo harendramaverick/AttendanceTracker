@@ -1,4 +1,4 @@
-package com.microsoft.attendancetracker.activity
+package com.microsoft.attendancetracker
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

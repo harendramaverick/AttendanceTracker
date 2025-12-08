@@ -12,54 +12,54 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AttendanceTracker">
         <activity
-            android:name=".activity.CreateAccountActivity"
+            android:name=".CreateAccountActivity"
             android:exported="false"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.AttendanceTracker"/>
         <activity
-            android:name=".activity.AttendanceActivity"
+            android:name=".AttendanceActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-            android:name=".activity.DashboardActivity"
+            android:name=".DashboardActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-            android:name=".activity.ForgotPasswordActivity"
+            android:name=".ForgotPasswordActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-            android:name=".activity.AttendanceReportActivity"
+            android:name=".AttendanceReportActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-            android:name=".activity.ChangePasswordActivity"
+            android:name=".ChangePasswordActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-            android:name=".activity.ChangePasswordExActivity"
+            android:name=".ChangePasswordExActivity"
             android:exported="false"
             android:label="@string/app_name"
             android:theme="@style/Theme.AttendanceTracker"/>
 
         <activity
-        android:name=".activity.LoginActivity"
+        android:name=".LoginActivity"
         android:exported="true"
         android:label="@string/app_name"
         android:theme="@style/Theme.AttendanceTracker">
