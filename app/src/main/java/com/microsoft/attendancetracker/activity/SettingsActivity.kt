@@ -1,6 +1,8 @@
-package com.microsoft.attendancetracker
+package com.microsoft.attendancetracker.activity
 
 import android.app.Activity
+import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,6 +43,7 @@ class SettingsActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreenView()
 {
@@ -49,7 +53,22 @@ fun SettingScreenView()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
         Scaffold(
-            bottomBar = { BottomNavBar(4) }
+             topBar = {
+                 TopAppBar(
+                     title = { Text("Settings") },
+                     navigationIcon = {
+                         IconButton(onClick = {
+                             activity?.finish()
+                         }) {
+                             Icon(
+                                 imageVector = Icons.Default.ArrowBack,
+                                 contentDescription = "Toggle Theme"
+                             )
+                         }
+                     }
+                 )
+             }
+            ,bottomBar = { BottomNavBar(4) }
         )
         {
             padding ->
@@ -83,17 +102,9 @@ fun SettingsScreen(
         color = MaterialTheme.colorScheme.background
     ) {
 
-        Column {
-
-            TopAppBar(
-                title = { Text("Settings") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-
+        Column(
+           modifier.padding(20.dp)
+        ) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -103,7 +114,7 @@ fun SettingsScreen(
                 item { ProfileCard() }
 
                 item { SectionTitle("ACCOUNT") }
-                item { SettingRow(Icons.Default.Lock, "Change Password") }
+                item { SettingRow(Icons.Default.Lock, "Change Password", onChangePassword = {})}
                 item { Divider() }
                 item { SettingRow(Icons.Default.FileDownload, "Export Data") }
 
@@ -136,11 +147,9 @@ fun SettingsScreen(
                             .padding(top = 20.dp),
                         color = Color.Gray,
                         style = MaterialTheme.typography.bodySmall,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
                 }
-
-                item{ Spacer( modifier = Modifier.height(90.dp ))}
             }
         }
     }
@@ -201,6 +210,32 @@ fun SectionTitle(text: String) {
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary
     )
+}
+
+@Composable
+fun SettingRow(icon: ImageVector, label: String, onChangePassword: () -> Unit = {}) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(icon, contentDescription = null, modifier = Modifier.size(26.dp))
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(label, modifier = Modifier
+                                            .weight(1f)
+                                            .clickable(
+                                                onClick = {
+                                                    onChangePassword()
+                                                    val intent = Intent(context,
+                                                        ChangePasswordExActivity::class.java)
+                                                    context.startActivity(intent)
+                                                }
+                                            ))
+        Icon(Icons.Default.KeyboardArrowRight, contentDescription = null)
+    }
 }
 
 @Composable
@@ -300,7 +335,7 @@ fun PreviewSettingsLight() {
     }
 }
 
-@Preview(showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 fun PreviewSettingsDark() {
     AttendanceTrackerTheme(useDarkTheme = true) {

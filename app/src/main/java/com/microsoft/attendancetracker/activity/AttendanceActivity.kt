@@ -1,4 +1,4 @@
-package com.microsoft.attendancetracker
+package com.microsoft.attendancetracker.activity
 
 import android.app.Activity
 import android.os.Bundle
@@ -68,9 +68,7 @@ fun AttendanceScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Attendance Submission",
-                        fontSize = 19.sp,
-                        fontWeight = FontWeight.Bold
+                        text = "Attendance Submission"
                     )
                 },
                 navigationIcon = {

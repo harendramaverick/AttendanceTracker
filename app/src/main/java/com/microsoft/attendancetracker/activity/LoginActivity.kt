@@ -1,6 +1,5 @@
-package com.microsoft.attendancetracker
+package com.microsoft.attendancetracker.activity
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -73,6 +72,8 @@ fun LoginScreen(viewModel: LoginViewModel) {
     var password by remember { mutableStateOf("") }
     val loginSuccess by viewModel.loginSuccess.collectAsState()
     val loginError by viewModel.loginError.collectAsState()
+    var show by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
 
     Log.d("LoginScreen", "loginSuccess: $loginSuccess")
@@ -107,12 +108,13 @@ fun LoginScreen(viewModel: LoginViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        // New Password
+        PasswordTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            label = "Password",
+            showPassword = show,
+            onToggle = { show = !show }
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -166,7 +168,13 @@ fun LoginScreen(viewModel: LoginViewModel) {
     }
 }
 
-/*
+class FakeLoginViewModel : LoginViewModel(null) {
+    fun loginUser() {
+    }
+}
+
+val loginVM: FakeLoginViewModel = FakeLoginViewModel();
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginLight() {
@@ -174,7 +182,7 @@ fun PreviewLoginLight() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen()
+            LoginScreen(loginVM)
         }
     }
 }
@@ -186,8 +194,7 @@ fun PreviewLoginDark() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen()
+            LoginScreen(loginVM)
         }
     }
 }
-*/

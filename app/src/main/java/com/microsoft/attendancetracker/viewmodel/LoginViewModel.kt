@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 
 
-class LoginViewModel(private val repository: UserRepository) : ViewModel() {
+open class LoginViewModel(private val repository: UserRepository?) : ViewModel() {
 
     private val _loginSuccess = MutableStateFlow(false)
     val loginSuccess = _loginSuccess.asStateFlow()
@@ -19,7 +19,7 @@ class LoginViewModel(private val repository: UserRepository) : ViewModel() {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            val user = repository.getUser(email)
+            val user = repository?.getUser(email)
             if (user != null && user.password == password) {
                 _loginSuccess.value = true
             } else {

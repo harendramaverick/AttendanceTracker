@@ -1,5 +1,6 @@
-package com.microsoft.attendancetracker
+package com.microsoft.attendancetracker.activity
 
+import android.R
 import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -86,14 +87,14 @@ fun AttendanceReportScreen(modifier: Modifier = Modifier)
     val activity = context as? Activity
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
 
-            Spacer(Modifier.height(120.dp))
+           // Spacer(Modifier.height(120.dp))
 
             // TITLE ---------------------------------------------------------------
             Text(
@@ -106,13 +107,13 @@ fun AttendanceReportScreen(modifier: Modifier = Modifier)
             Spacer(Modifier.height(20.dp))
 
             // FILTERS -------------------------------------------------------------
-            FilterCard("Student", "All Students", android.R.drawable.ic_menu_myplaces)
+            FilterCard("Student", "All Students", R.drawable.ic_menu_myplaces)
             Spacer(Modifier.height(14.dp))
-            FilterCard("Status", "All", android.R.drawable.ic_menu_sort_by_size)
+            FilterCard("Status", "All", R.drawable.ic_menu_sort_by_size)
             Spacer(Modifier.height(14.dp))
-            FilterCard("Start Date", "01 Aug 2024", android.R.drawable.ic_menu_month)
+            FilterCard("Start Date", "01 Aug 2024", R.drawable.ic_menu_month)
             Spacer(Modifier.height(14.dp))
-            FilterCard("End Date", "31 Aug 2024", android.R.drawable.ic_menu_month)
+            FilterCard("End Date", "31 Aug 2024", R.drawable.ic_menu_month)
 
             Spacer(Modifier.height(20.dp))
 
@@ -182,7 +183,7 @@ fun AttendanceReportScreen(modifier: Modifier = Modifier)
             StudentRow("Cody Fisher", "August 28, 2024", "Absent", Color(0xFFFF9800))
             StudentRow("Jacob Jones", "August 27, 2024", "Late", Color(0xFFFF5722))
 
-            Spacer(Modifier.height(90.dp))
+           // Spacer(Modifier.height(90.dp))
         }
 }
 

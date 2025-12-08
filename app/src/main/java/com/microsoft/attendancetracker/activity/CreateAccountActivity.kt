@@ -1,4 +1,4 @@
-package com.microsoft.attendancetracker
+package com.microsoft.attendancetracker.activity
 
 import android.app.Activity
 import android.os.Bundle
@@ -243,29 +243,27 @@ fun CreateAccountScreen(
     }
 }
 
-/*
-class UserRepositoryFake : UserRepository(null)
+class FakeCreateAccountViewModel : CreateAccountViewModel(null) {
+    fun CreateAccountViewModel(fullName: String, email: String, password: String) {
+        // No real login — for preview only
+    }
+}
 
-class PreviewCreateAccountViewModel : CreateAccountViewModel(
-    UserRepositoryFake()
-)
-
-
-
+val accountVM: FakeCreateAccountViewModel = FakeCreateAccountViewModel();
 
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
 fun PreviewLightReport() {
     AttendanceTrackerTheme(useDarkTheme = false) {
-        CreateAccountScreen(viewModel = PreviewCreateAccountViewModel())
+        CreateAccountScreen(accountVM)
     }
 }
 
 @Preview(showBackground = true, name = "Dark Mode")
 @Composable
 fun PreviewDarkReport() {
+
     AttendanceTrackerTheme(useDarkTheme = true) {
-        CreateAccountScreen(viewModel = PreviewCreateAccountViewModel())
+        CreateAccountScreen(accountVM)
     }
 }
-*/
