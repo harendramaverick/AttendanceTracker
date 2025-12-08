@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
+import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
@@ -62,7 +63,7 @@ fun AttendanceScreen(
     // NEW STATES TO SHOW/HIDE CARDS
     var showCheckInCard by remember { mutableStateOf(false) }
     var showCheckOutCard by remember { mutableStateOf(false) }
-    val activity = LocalContext.current as? Activity
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -73,7 +74,9 @@ fun AttendanceScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = {activity?.finish()}
+                        onClick = {
+                            Logout(context)
+                        }
                     ) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }

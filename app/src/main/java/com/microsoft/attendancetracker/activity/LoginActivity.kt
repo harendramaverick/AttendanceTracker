@@ -79,6 +79,13 @@ fun LoginScreen(viewModel: LoginViewModel) {
     Log.d("LoginScreen", "loginSuccess: $loginSuccess")
     Log.d("LoginScreen", "loginError: $loginError")
 
+    LaunchedEffect(loginSuccess) {
+        if (loginSuccess) {
+            val intent = Intent(context, DashboardActivity::class.java)
+            context.startActivity(intent)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -138,10 +145,6 @@ fun LoginScreen(viewModel: LoginViewModel) {
         Button(
             onClick = {
                         viewModel.login(email, password)
-                        if (loginSuccess) {
-                            val intent = Intent(context, DashboardActivity::class.java)
-                            context.startActivity(intent)
-                        }
                       },
             modifier = Modifier
                 .fillMaxWidth()

@@ -26,8 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
+import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
@@ -49,7 +51,7 @@ fun SettingScreenView()
 {
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
-    val activity = LocalContext.current as? Activity
+    val context = LocalContext.current
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
         Scaffold(
@@ -58,7 +60,7 @@ fun SettingScreenView()
                      title = { Text("Settings") },
                      navigationIcon = {
                          IconButton(onClick = {
-                             activity?.finish()
+                             Logout(context)
                          }) {
                              Icon(
                                  imageVector = Icons.Default.ArrowBack,
@@ -78,9 +80,6 @@ fun SettingScreenView()
                     themeViewModel.toggleTheme()
                     Log.d("SettingsActivity", "Theme toggled: $uDarkTheme")
                 },
-                onBack = {
-                    activity?.finish()
-                },
                 modifier = Modifier.padding(padding)
             )
         }
@@ -93,7 +92,6 @@ fun SettingScreenView()
 fun SettingsScreen(
     darkTheme: Boolean,
     onThemeToggle: () -> Unit,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -304,10 +302,9 @@ fun ThemeRow(darkTheme: Boolean, onToggle: () -> Unit) {
 @Composable
 fun LogoutButton() {
     val context = LocalContext.current
-    val activity = context as? Activity
     Button(
-        onClick = {
-            activity?.finish()
+        onClick ={
+            Logout(context)
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -317,6 +314,8 @@ fun LogoutButton() {
         Text("Logout", color = Color.Red)
     }
 }
+
+
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -329,8 +328,7 @@ fun PreviewSettingsLight() {
     AttendanceTrackerTheme(useDarkTheme = false){
         SettingsScreen(
             darkTheme = false,
-            onThemeToggle = {},
-            onBack = {}
+            onThemeToggle = {}
         )
     }
 }
@@ -341,8 +339,7 @@ fun PreviewSettingsDark() {
     AttendanceTrackerTheme(useDarkTheme = true) {
         SettingsScreen(
             darkTheme = true,
-            onThemeToggle = {},
-            onBack = {}
+            onThemeToggle = {}
         )
     }
 }

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
+import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
@@ -48,7 +49,6 @@ fun AttendanceReportScreenMain()
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     val context = LocalContext.current
-    val activity = context as? Activity
     Surface(modifier = Modifier.fillMaxSize()) {
         AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
         {
@@ -58,7 +58,7 @@ fun AttendanceReportScreenMain()
                     title = { Text("Attendance Reports") },
                     navigationIcon = {
                         IconButton(onClick = {
-                            activity?.finish()
+                            Logout(context)
                         }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,

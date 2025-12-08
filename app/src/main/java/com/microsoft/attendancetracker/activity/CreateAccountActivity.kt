@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
+import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.database.AppDatabase
 import com.microsoft.attendancetracker.database.CreateAccountVMFactory
 import com.microsoft.attendancetracker.viewmodel.CreateAccountViewModel
@@ -110,8 +111,7 @@ fun CreateAccountScreen(
                 modifier = Modifier
                     .size(32.dp)
                     .clickable {
-                        onBack()
-                        activity?.finish()
+                        Logout(context)
                     }
             )
 

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class ChangePasswordExActivity : ComponentActivity() {
@@ -47,7 +48,7 @@ fun ChangePasswordScreenMainEx() {
                 title = { Text("Change Password") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        activity?.finish()
+                        Logout(context)
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,

@@ -1,6 +1,7 @@
 package com.microsoft.attendancetracker.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
+import com.microsoft.attendancetracker.component.Logout
 
 class DashboardActivity : ComponentActivity() {
 
@@ -53,8 +55,6 @@ fun DashboardMainScreen()
 @Composable
 fun DashboardScreen() {
     val context = LocalContext.current
-    val activity = context as? Activity
-
 
     Scaffold(
         topBar = {
@@ -62,7 +62,7 @@ fun DashboardScreen() {
                 title = { Text("Dashboard") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        activity?.finish()
+                        Logout(context)
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
