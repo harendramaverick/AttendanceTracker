@@ -33,6 +33,7 @@ import com.microsoft.attendancetracker.database.AppDatabase
 import com.microsoft.attendancetracker.database.CreateAccountVMFactory
 import com.microsoft.attendancetracker.viewmodel.CreateAccountViewModel
 import com.microsoft.attendancetracker.database.UserRepository
+import com.microsoft.attendancetracker.model.SessionManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
@@ -46,8 +47,9 @@ class CreateAccountActivity : ComponentActivity() {
             AppDatabase::class.java,
             "attendance_database"
         ).build()
+        val session = SessionManager(this)
 
-        val repo = UserRepository(db.userDao())
+        val repo = UserRepository(db.userDao(),session)
         val vmFactory = CreateAccountVMFactory(repo)
 
         setContent {
@@ -244,8 +246,7 @@ fun CreateAccountScreen(
 }
 
 class FakeCreateAccountViewModel : CreateAccountViewModel(null) {
-    fun CreateAccountViewModel(fullName: String, email: String, password: String) {
-        // No real login — for preview only
+    override fun createAccount(fullName: String, email: String, password: String) {
     }
 }
 

@@ -24,6 +24,7 @@ import androidx.room.Room
 import com.microsoft.attendancetracker.database.AppDatabase
 import com.microsoft.attendancetracker.database.LoginVMFactory
 import com.microsoft.attendancetracker.database.UserRepository
+import com.microsoft.attendancetracker.model.SessionManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.LoginViewModel
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
@@ -39,8 +40,8 @@ class LoginActivity : ComponentActivity() {
             AppDatabase::class.java,
             "attendance_database"
         ).build()
-
-        val repo = UserRepository(db.userDao())
+        val session = SessionManager(this)
+        val repo = UserRepository(db.userDao(), session)
         val vmFactory = LoginVMFactory(repo)
 
         setContent {

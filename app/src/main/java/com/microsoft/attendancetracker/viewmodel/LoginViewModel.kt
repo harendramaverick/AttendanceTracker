@@ -22,6 +22,7 @@ open class LoginViewModel(private val repository: UserRepository?) : ViewModel()
             val user = repository?.getUser(email)
             if (user != null && user.password == password) {
                 _loginSuccess.value = true
+                repository.sessionManager.saveLoginEmail(email)
             } else {
                 _loginError.value = "Invalid email or password"
             }

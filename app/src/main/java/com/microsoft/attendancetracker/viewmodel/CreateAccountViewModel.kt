@@ -12,7 +12,7 @@ open class CreateAccountViewModel(private val repo: UserRepository?) : ViewModel
     private val _success = MutableStateFlow(false)
     val success = _success.asStateFlow()
 
-    fun createAccount(fullName: String, email: String, password: String) {
+    open fun createAccount(fullName: String, email: String, password: String) {
         viewModelScope.launch {
             repo?.createAccount(fullName, email, password)
             _success.value = true

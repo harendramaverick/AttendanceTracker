@@ -17,12 +17,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
+import android.widget.Toast
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.room.Room
+import com.microsoft.attendancetracker.database.AppDatabase
+import com.microsoft.attendancetracker.database.AuthRepository
+import com.microsoft.attendancetracker.database.AuthViewModelFactory
+import com.microsoft.attendancetracker.database.UserRepository
+import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.viewmodel.AuthViewModel
 
 class ChangePasswordExActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +39,19 @@ class ChangePasswordExActivity : ComponentActivity() {
         setContent {
             val themeViewModel: ThemeViewModel = viewModel()
             val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+
+            val db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                "attendance_database"
+            ).build()
+            val session = SessionManager(this)
+            val repository = AuthRepository(db.userDao(), session)
+            val factory = AuthViewModelFactory(repository)
+            val viewModel: AuthViewModel = viewModel(factory = factory)
+
             AttendanceTrackerTheme(darkTheme = uDarkTheme) {
-                ChangePasswordScreenMainEx()
+                ChangePasswordScreenMainEx(viewModel)
             }
         }
     }
@@ -39,7 +59,7 @@ class ChangePasswordExActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangePasswordScreenMainEx() {
+fun ChangePasswordScreenMainEx(viewModel: AuthViewModel) {
     val context = LocalContext.current
     val activity = context as? Activity
     Scaffold(
@@ -58,16 +78,17 @@ fun ChangePasswordScreenMainEx() {
                 }
             )
         }
-    ) { padding ->
+    ) {
+        padding ->
         ChangePasswordScreenEx(
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(padding), viewModel
         )
     }
 }
 
 
 @Composable
-fun ChangePasswordScreenEx(modifier: Modifier = Modifier) {   // , onToggleTheme: () -> Unit) {
+fun ChangePasswordScreenEx(modifier: Modifier = Modifier,  viewModel: AuthViewModel = viewModel()) {   // , onToggleTheme: () -> Unit) {
     var currentPw by remember { mutableStateOf("") }
     var newPw by remember { mutableStateOf("") }
     var confirmPw by remember { mutableStateOf("") }
@@ -76,7 +97,18 @@ fun ChangePasswordScreenEx(modifier: Modifier = Modifier) {   // , onToggleTheme
     var newVisible by remember { mutableStateOf(false) }
     var confirmVisible by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
+
     val passwordMatch = confirmPw.isEmpty() || confirmPw == newPw
+
+    LaunchedEffect(viewModel.isSuccess) {
+        if(viewModel.isSuccess == true){
+                Toast.makeText(context, viewModel.message, Toast.LENGTH_SHORT)
+                    .show()
+            activity?.finish()
+        }
+    }
 
     Column(
         modifier = modifier
@@ -125,7 +157,22 @@ fun ChangePasswordScreenEx(modifier: Modifier = Modifier) {   // , onToggleTheme
         Spacer(Modifier.height(40.dp))
 
         Button(
-            onClick = { /* password update logic */ },
+            onClick = {
+                        when {
+                                currentPw.isEmpty() -> {
+                                    Toast.makeText(context, "Enter current password", Toast.LENGTH_SHORT).show()
+                                }
+                                newPw.length < 8 -> {
+                                    Toast.makeText(context, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show()
+                                }
+                                newPw != confirmPw -> {
+                                    Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                                }
+                                else -> {
+                                    viewModel.changePassword(currentPw, newPw)
+                                }
+                            }
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
@@ -166,6 +213,15 @@ fun PasswordInput(
     )
 }
 
+
+class FakeAuthViewModel : AuthViewModel(null) {
+    override fun changePassword(currentPw: String, newPw: String) {
+        // Do nothing
+    }
+}
+
+val fakeViewModel = FakeAuthViewModel()
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewLightChangePasswordMainEx() {
@@ -173,26 +229,23 @@ fun PreviewLightChangePasswordMainEx() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            ChangePasswordScreenMainEx()
+            ChangePasswordScreenMainEx(fakeViewModel)
         }
     }
 }
-
-
-
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewDarkChangePasswordMainEx() {
+
     AttendanceTrackerTheme(darkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            ChangePasswordScreenMainEx()
+            ChangePasswordScreenMainEx(fakeViewModel)
         }
     }
 }
-
 
 
 
