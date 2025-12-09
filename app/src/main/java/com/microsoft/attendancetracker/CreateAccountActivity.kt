@@ -68,19 +68,13 @@ fun CreateAccountMainScreen(viewModel: CreateAccountViewModel)
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
-        CreateAccountScreen(
-            viewModel,
-            onBack = {},
-            onLoginClick = {}
-        )
+        CreateAccountScreen(viewModel)
     }
 }
 
 @Composable
 fun CreateAccountScreen(
-    viewModel: CreateAccountViewModel,
-    onBack: () -> Unit = {},
-    onLoginClick: () -> Unit = {}
+    viewModel: CreateAccountViewModel
 ) {
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -236,7 +230,6 @@ fun CreateAccountScreen(
                     text = "Log In",
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.clickable {
-                        onLoginClick()
                         activity?.finish()
                     }
                 )
@@ -250,11 +243,10 @@ class FakeCreateAccountViewModel : CreateAccountViewModel(null) {
     }
 }
 
-val accountVM: FakeCreateAccountViewModel = FakeCreateAccountViewModel();
-
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
 fun PreviewLightReport() {
+    val accountVM: FakeCreateAccountViewModel = viewModel();
     AttendanceTrackerTheme(useDarkTheme = false) {
         CreateAccountScreen(accountVM)
     }
@@ -263,7 +255,7 @@ fun PreviewLightReport() {
 @Preview(showBackground = true, name = "Dark Mode")
 @Composable
 fun PreviewDarkReport() {
-
+    val accountVM: FakeCreateAccountViewModel = viewModel();
     AttendanceTrackerTheme(useDarkTheme = true) {
         CreateAccountScreen(accountVM)
     }

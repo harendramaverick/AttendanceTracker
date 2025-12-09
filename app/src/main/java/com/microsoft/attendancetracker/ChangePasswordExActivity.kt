@@ -220,11 +220,12 @@ class FakeAuthViewModel : AuthViewModel(null) {
     }
 }
 
-val fakeViewModel = FakeAuthViewModel()
+
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewLightChangePasswordMainEx() {
+    val fakeViewModel : FakeAuthViewModel = viewModel()
     AttendanceTrackerTheme(darkTheme = false) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
@@ -237,7 +238,7 @@ fun PreviewLightChangePasswordMainEx() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewDarkChangePasswordMainEx() {
-
+    val fakeViewModel : FakeAuthViewModel = viewModel()
     AttendanceTrackerTheme(darkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
