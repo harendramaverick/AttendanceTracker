@@ -28,6 +28,7 @@ import com.microsoft.attendancetracker.database.AppDatabase
 import com.microsoft.attendancetracker.database.AuthRepository
 import com.microsoft.attendancetracker.database.AuthViewModelFactory
 import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.AuthViewModel
 
 class ChangePasswordExActivity : ComponentActivity() {
@@ -47,7 +48,7 @@ class ChangePasswordExActivity : ComponentActivity() {
             val factory = AuthViewModelFactory(repository)
             val viewModel: AuthViewModel = viewModel(factory = factory)
 
-            AttendanceTrackerTheme(darkTheme = uDarkTheme) {
+            AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
                 ChangePasswordScreenMainEx(viewModel)
             }
         }
@@ -216,13 +217,11 @@ class FakeAuthViewModel : AuthViewModel(null) {
     }
 }
 
-
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewLightChangePasswordMainEx() {
     val fakeViewModel : FakeAuthViewModel = viewModel()
-    AttendanceTrackerTheme(darkTheme = false) {
+    AttendanceTrackerTheme(useDarkTheme = false) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
@@ -235,7 +234,7 @@ fun PreviewLightChangePasswordMainEx() {
 @Composable
 fun PreviewDarkChangePasswordMainEx() {
     val fakeViewModel : FakeAuthViewModel = viewModel()
-    AttendanceTrackerTheme(darkTheme = true) {
+    AttendanceTrackerTheme(useDarkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {

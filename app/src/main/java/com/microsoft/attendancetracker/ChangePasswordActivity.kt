@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
+import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 
 // ─────────────────────────────────────────────────────────────
 // ACTIVITY WITH THEME SWITCH
@@ -31,7 +32,7 @@ class ChangePasswordActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AttendanceTrackerTheme(darkTheme = isDarkTheme) {
+            AttendanceTrackerTheme(useDarkTheme = isDarkTheme) {
 
                 ChangePasswordScreen(
                     onToggleTheme = { isDarkTheme = !isDarkTheme }
@@ -218,44 +219,13 @@ fun passwordStrength(password: String): PasswordStrength {
 }
 
 // ─────────────────────────────────────────────────────────────
-// FULL MATERIAL 3 THEME IN ONE FILE
-// ─────────────────────────────────────────────────────────────
-
-@Composable
-fun AttendanceTrackerTheme(
-    darkTheme: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    val lightColors = lightColorScheme(
-        primary = Color(0xFF0061A4),
-        secondary = Color(0xFF1982C4),
-        tertiary = Color(0xFF6BD1FF)
-    )
-
-    val darkColors = darkColorScheme(
-        primary = Color(0xFF8ECBFF),
-        secondary = Color(0xFF5AB2F5),
-        tertiary = Color(0xFF2D9ED6)
-    )
-
-    val colors = if (darkTheme) darkColors else lightColors
-
-    MaterialTheme(
-        colorScheme = colors,
-        typography = Typography(),
-        shapes = Shapes(),
-        content = content
-    )
-}
-
-// ─────────────────────────────────────────────────────────────
 // PREVIEWS
 // ─────────────────────────────────────────────────────────────
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewLightChangePassword() {
-    AttendanceTrackerTheme(darkTheme = false) {
+    AttendanceTrackerTheme(useDarkTheme = false) {
         ChangePasswordScreen(onToggleTheme = {})
     }
 }
@@ -263,7 +233,7 @@ fun PreviewLightChangePassword() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewDarkChangePassword() {
-    AttendanceTrackerTheme(darkTheme = true) {
+    AttendanceTrackerTheme(useDarkTheme = true) {
         ChangePasswordScreen(onToggleTheme = {})
     }
 }
