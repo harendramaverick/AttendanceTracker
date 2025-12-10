@@ -2,6 +2,7 @@ package com.microsoft.attendancetracker
 
 import android.R
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,16 +50,20 @@ fun AttendanceReportScreenMain()
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
     Surface(modifier = Modifier.fillMaxSize()) {
         AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
         {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Attendance Reports") },
+                    title = { Text("Attendance Reports", Modifier.padding(horizontal = 60.dp))},
                     navigationIcon = {
                         IconButton(onClick = {
-                            Logout(context)
+                            activity?.finish()
+                            val intent = Intent(context, DashboardActivity::class.java)
+                            context.startActivity(intent)
+                            activity?.overridePendingTransition(com.microsoft.attendancetracker.R.anim.fade_in, com.microsoft.attendancetracker.R.anim.fade_out)
                         }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
@@ -84,7 +89,6 @@ fun AttendanceReportScreenMain()
 fun AttendanceReportScreen(modifier: Modifier = Modifier)
 {
     val context = LocalContext.current
-    val activity = context as? Activity
 
         Column(
             modifier = modifier

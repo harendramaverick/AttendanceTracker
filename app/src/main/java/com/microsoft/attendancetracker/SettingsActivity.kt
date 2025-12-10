@@ -1,5 +1,6 @@
 package com.microsoft.attendancetracker
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -50,15 +51,19 @@ fun SettingScreenView()
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     val context = LocalContext.current
+    val activity = LocalContext.current as? Activity
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
         Scaffold(
              topBar = {
                  TopAppBar(
-                     title = { Text("Settings") },
+                     title = { Text("Settings", Modifier.padding(horizontal = 100.dp)) },
                      navigationIcon = {
                          IconButton(onClick = {
-                             Logout(context)
+                             activity?.finish()
+                             val intent = Intent(context, DashboardActivity::class.java)
+                             context.startActivity(intent)
+                             activity?.overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
                          }) {
                              Icon(
                                  imageVector = Icons.Default.ArrowBack,

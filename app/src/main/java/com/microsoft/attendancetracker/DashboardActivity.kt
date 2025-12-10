@@ -57,13 +57,14 @@ fun DashboardScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Dashboard") },
+                title = {
+                            Text("Dashboard", Modifier.padding(horizontal = 80.dp))
+                        },
                 navigationIcon = {
                     IconButton(onClick = {
-                        Logout(context)
-                    }) {
+                    }, enabled = false) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Default.Dashboard,
                             contentDescription = "Toggle Theme"
                         )
                     }

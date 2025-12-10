@@ -1,6 +1,7 @@
 package com.microsoft.attendancetracker
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -60,15 +61,14 @@ class ChangePasswordExActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangePasswordScreenMainEx(viewModel: AuthViewModel) {
-    val context = LocalContext.current
-    val activity = context as? Activity
+    val activity = LocalContext.current as? Activity
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Change Password") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        Logout(context)
+                        activity?.finish()
                     }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,

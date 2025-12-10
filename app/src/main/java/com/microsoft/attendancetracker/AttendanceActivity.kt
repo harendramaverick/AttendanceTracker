@@ -1,5 +1,6 @@
 package com.microsoft.attendancetracker
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -63,23 +64,28 @@ fun AttendanceScreen(
     var showCheckInCard by remember { mutableStateOf(false) }
     var showCheckOutCard by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val activity = LocalContext.current as? android.app.Activity
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Attendance Submission"
+                        text = "Attendance Submission", Modifier.padding(horizontal = 40.dp)
                     )
                 },
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            Logout(context)
+                            activity?.finish()
+                            val intent = Intent(context, DashboardActivity::class.java)
+                            context.startActivity(intent)
+                            activity?.overridePendingTransition(com.microsoft.attendancetracker.R.anim.fade_in, com.microsoft.attendancetracker.R.anim.fade_out)
                         }
                     ) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
-                },
+                }
+                /*,
                 actions = {
                     IconButton(
                         onClick = {
@@ -88,6 +94,7 @@ fun AttendanceScreen(
                         Icon(Icons.Default.MoreVert, contentDescription = "Menu")
                     }
                 }
+                */
             )
         },
         bottomBar = { BottomNavBar(3) }
