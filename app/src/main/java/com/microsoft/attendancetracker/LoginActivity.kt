@@ -186,7 +186,7 @@ fun PreviewLoginLight() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen(loginVM)
+            LoginMainScreen(loginVM)
         }
     }
 }
@@ -198,7 +198,7 @@ fun PreviewLoginDark() {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginScreen(loginVM)
+            LoginMainScreen(loginVM)
         }
     }
 }

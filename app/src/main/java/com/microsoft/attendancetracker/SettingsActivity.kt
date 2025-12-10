@@ -27,9 +27,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
 import com.microsoft.attendancetracker.component.BottomNavBar
 import com.microsoft.attendancetracker.component.Logout
+import com.microsoft.attendancetracker.database.AppDatabase
+import com.microsoft.attendancetracker.database.LoginVMFactory
+import com.microsoft.attendancetracker.database.UserEntity
+import com.microsoft.attendancetracker.database.UserRepository
+import com.microsoft.attendancetracker.model.SessionManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
+import com.microsoft.attendancetracker.viewmodel.LoginViewModel
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class SettingsActivity : ComponentActivity() {
@@ -37,8 +44,19 @@ class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "attendance_database"
+        ).build()
+        val session = SessionManager(this)
+        val repo = UserRepository(db.userDao(), session)
+        val vmFactory = LoginVMFactory(repo)
         setContent {
-            SettingScreenView()
+            val loginVM: LoginViewModel = viewModel(factory = vmFactory)
+            val email: String? = loginVM.sessionManager?.getLoginEmail()
+            loginVM.getUserRecord(email)
+            SettingScreenView(loginVM)
         }
     }
 }
@@ -46,7 +64,7 @@ class SettingsActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreenView()
+fun SettingScreenView( loginVM: LoginViewModel)
 {
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
@@ -83,7 +101,8 @@ fun SettingScreenView()
                     themeViewModel.toggleTheme()
                     Log.d("SettingsActivity", "Theme toggled: $uDarkTheme")
                 },
-                modifier = Modifier.padding(padding)
+                modifier = Modifier.padding(padding),
+                loginVM
             )
         }
     }
@@ -95,7 +114,8 @@ fun SettingScreenView()
 fun SettingsScreen(
     darkTheme: Boolean,
     onThemeToggle: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loginVM: LoginViewModel
 ) {
 
     Surface(
@@ -112,7 +132,7 @@ fun SettingsScreen(
                     .padding(bottom = 30.dp)
             ) {
 
-                item { ProfileCard() }
+                item { ProfileCard(loginVM) }
 
                 item { SectionTitle("ACCOUNT") }
                 item { SettingRow(Icons.Default.Lock, "Change Password", onChangePassword = {})}
@@ -161,7 +181,7 @@ fun SettingsScreen(
 ///////////////////////////////////////////////////////////////////////////
 
 @Composable
-fun ProfileCard() {
+fun ProfileCard( loginVM: LoginViewModel) {
     Surface(
         modifier = Modifier.padding(16.dp),
         shape = RoundedCornerShape(20.dp),
@@ -185,8 +205,12 @@ fun ProfileCard() {
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(Modifier.weight(1f)) {
-                Text("Alex Harrison", fontWeight = FontWeight.Bold)
-                Text("alex.harrison@example.com", color = Color.Gray)
+                Text(if(loginVM._record.collectAsState().value != null) {loginVM._record.collectAsState().value!!.fullName} else {
+                    "dummy"
+                }, fontWeight = FontWeight.Bold)
+                Text(if(loginVM._record.collectAsState().value != null) {loginVM._record.collectAsState().value!!.email} else {
+                    "dummy@gmail.com"
+                }, color = Color.Gray)
             }
 
             Surface(
@@ -318,20 +342,19 @@ fun LogoutButton() {
     }
 }
 
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 //  PREVIEWS
 ///////////////////////////////////////////////////////////////////////////
-
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
 fun PreviewSettingsLight() {
+    val loginVM: FakeLoginViewModel = FakeLoginViewModel();
     AttendanceTrackerTheme(useDarkTheme = false){
         SettingsScreen(
             darkTheme = false,
-            onThemeToggle = {}
+            onThemeToggle = {},
+            Modifier.padding(10.dp),
+            loginVM
         )
     }
 }
@@ -339,10 +362,13 @@ fun PreviewSettingsLight() {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 fun PreviewSettingsDark() {
+    val loginVM: FakeLoginViewModel = FakeLoginViewModel();
     AttendanceTrackerTheme(useDarkTheme = true) {
         SettingsScreen(
             darkTheme = true,
-            onThemeToggle = {}
+            onThemeToggle = {},
+            Modifier.padding(10.dp),
+            loginVM
         )
     }
 }

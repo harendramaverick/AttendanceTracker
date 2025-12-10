@@ -12,7 +12,7 @@ interface UserDao {
     suspend fun insertUser(user: UserEntity)
 
     @Query("SELECT * FROM users WHERE email = :email")
-    suspend fun getUserByEmail(email: String): UserEntity?
+    suspend fun getUserByEmail(email: String?): UserEntity?
 
     @Query("UPDATE users SET password = :newPassword WHERE email = :email")
     suspend fun updatePassword(email: String, newPassword: String): Int

@@ -13,7 +13,7 @@ open class UserRepository(private val userDao: UserDao?, val sessionManager: Ses
         userDao?.insertUser(user)
     }
 
-    suspend fun getUser(email: String): UserEntity? {
+    suspend fun getUser(email: String?): UserEntity? {
         return userDao?.getUserByEmail(email)
     }
 
