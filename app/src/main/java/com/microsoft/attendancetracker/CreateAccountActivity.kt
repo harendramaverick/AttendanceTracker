@@ -41,6 +41,9 @@ class CreateAccountActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
+
         // Create DB
         val db = Room.databaseBuilder(
             applicationContext,

@@ -19,45 +19,74 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.Room
 import com.microsoft.attendancetracker.component.BottomNavBar
-import com.microsoft.attendancetracker.component.Logout
+import com.microsoft.attendancetracker.database.AppDatabase
+import com.microsoft.attendancetracker.database.AttendanceRepository
+import com.microsoft.attendancetracker.database.AttendanceVMFactory
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
+import com.microsoft.attendancetracker.viewmodel.AttendanceViewModel
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.tooling.preview.Preview
+
 
 class AttendanceActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Create DB
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "attendance_database"
+        ).build()
+        val repo = AttendanceRepository(db.AttendanceDao())
+        val vmFactory = AttendanceVMFactory(repo)
         setContent {
-            AttendanceScreenMain()
+            val attendenceVM: AttendanceViewModel = viewModel(factory = vmFactory)
+            AttendanceScreenMain(attendenceVM)
         }
     }
 }
 
+
+
 @Composable
-fun AttendanceScreenMain()
+fun AttendanceScreenMain(attendenceVM: AttendanceViewModel)
 {
     var iSCheckedInState by remember {  mutableStateOf(false) }
     val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+
+    attendenceVM.loadTodayRecord()
+
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
         AttendanceScreen(
             isCheckedIn =   iSCheckedInState,
             onCheckIn   = { iSCheckedInState = true  },
-            onCheckOut  = { iSCheckedInState = false }
+            onCheckOut  = { iSCheckedInState = false },
+            attendenceVM
         )
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AttendanceScreen(
     isCheckedIn: Boolean,
     onCheckIn: () -> Unit,
-    onCheckOut: () -> Unit
+    onCheckOut: () -> Unit,
+    attendanceViewModel: AttendanceViewModel
 ) {
 
     // NEW STATES TO SHOW/HIDE CARDS
@@ -65,6 +94,20 @@ fun AttendanceScreen(
     var showCheckOutCard by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val activity = LocalContext.current as? android.app.Activity
+
+    val calendar = Calendar.getInstance()
+    val formatter = SimpleDateFormat("dd MMMM", Locale.getDefault())
+    val date = "Today, ${formatter.format(calendar.time)}"
+
+    if(!showCheckInCard && attendanceViewModel._record.collectAsState().value?.checkInTime?.toLong() != 0L)
+    {
+        showCheckInCard = !showCheckInCard
+    }
+    if(!showCheckOutCard && attendanceViewModel._record.collectAsState().value?.checkOutTime?.toLong() != 0L)
+    {
+        showCheckOutCard = !showCheckOutCard
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -110,7 +153,7 @@ fun AttendanceScreen(
             Spacer(Modifier.height(20.dp))
 
             Text(
-                text = "Today, 24 July",
+                text = date,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
                 fontSize = 18.sp
             )
@@ -134,6 +177,7 @@ fun AttendanceScreen(
                         onCheckIn()
                         Log.d("MY_LOG", isCheckedIn.toString());
                         showCheckInCard = !showCheckInCard
+                        attendanceViewModel.checkIn()
                     },
                     enabled = !isCheckedIn,
                     modifier = Modifier
@@ -150,6 +194,7 @@ fun AttendanceScreen(
                     onClick = {
                         onCheckOut()
                         showCheckOutCard = !showCheckOutCard
+                        attendanceViewModel.checkOut()
                     },
                     enabled = isCheckedIn,
                     colors = ButtonDefaults.buttonColors(
@@ -176,17 +221,17 @@ fun AttendanceScreen(
             Spacer(Modifier.height(16.dp))
 
             // SHOW CHECK-IN CARD ONLY WHEN CLICKED
-            if (showCheckInCard) {
+           if (showCheckInCard) {
                 LogCard(
                     icon = Icons.Default.Login,
                     iconColor = Color(0xFF12D272),
                     bgColor = Color(0xFFE8FFF4),
                     title = "Checked-in at:",
-                    time = "09:03 AM"
+                    time = formatTime(attendanceViewModel._record.collectAsState().value?.checkInTime)
                 )
 
                 Spacer(Modifier.height(12.dp))
-            }
+           }
 
             // SHOW CHECK-OUT CARD ONLY WHEN CLICKED
             if (showCheckOutCard) {
@@ -195,13 +240,18 @@ fun AttendanceScreen(
                     iconColor = Color(0xFFE53935),
                     bgColor = Color(0xFFFFEAEA),
                     title = "Checked-out at:",
-                    time = "05:15 PM"
+                    time =  formatTime(attendanceViewModel._record.collectAsState().value?.checkOutTime)
                 )
             }
         }
     }
+}
 
 
+fun formatTime(timeMillis: Long?): String {
+    if (timeMillis == null) return "--:--"
+    val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    return sdf.format(Date(timeMillis))
 }
 
 @Composable
@@ -257,14 +307,34 @@ fun LogCard(
     }
 }
 
+class FakeAttendenceViewModel : AttendanceViewModel(null) {
+
+    override fun loadTodayRecord() {
+    }
+
+    override fun checkIn() {
+    }
+
+    override fun checkOut() {
+    }
+
+    override fun format(time: Long?): String {
+        return ""
+    }
+
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewLight1() {
     AttendanceTrackerTheme(useDarkTheme = false) {
+        val attendenceVM: FakeAttendenceViewModel = viewModel();
         AttendanceScreen(
             isCheckedIn = false,
             onCheckIn = {},
-            onCheckOut = {}
+            onCheckOut = {},
+            attendenceVM
         )
     }
 }
@@ -273,10 +343,12 @@ fun PreviewLight1() {
 @Composable
 fun PreviewDark2() {
     AttendanceTrackerTheme(useDarkTheme = true) {
+        val attendenceVM: FakeAttendenceViewModel = viewModel();
         AttendanceScreen(
             isCheckedIn = false,
             onCheckIn = {},
-            onCheckOut = {}
+            onCheckOut = {},
+            attendenceVM
         )
     }
 }

@@ -9,21 +9,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class ThemeViewModel(application: Application) : AndroidViewModel(application) {
+open class ThemeViewModel(application: Application?) : AndroidViewModel(application!!) {
 
-    private val context = application.applicationContext
+    private val context = application?.applicationContext
 
     val isDarkTheme: StateFlow<Boolean> =
         ThemePreferences.isDarkTheme(context)
             .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    fun toggleTheme() {
+    open fun toggleTheme() {
         viewModelScope.launch {
             ThemePreferences.setDarkTheme(context, !isDarkTheme.value)
         }
     }
 
-    fun setDarkTheme(value: Boolean) {
+    open fun setDarkTheme(value: Boolean) {
         viewModelScope.launch {
             ThemePreferences.setDarkTheme(context, value)
         }

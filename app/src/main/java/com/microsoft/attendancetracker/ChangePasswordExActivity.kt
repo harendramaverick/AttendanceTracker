@@ -1,7 +1,6 @@
 package com.microsoft.attendancetracker
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,16 +20,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 import android.widget.Toast
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
 import androidx.room.Room
 import com.microsoft.attendancetracker.database.AppDatabase
 import com.microsoft.attendancetracker.database.AuthRepository
 import com.microsoft.attendancetracker.database.AuthViewModelFactory
-import com.microsoft.attendancetracker.database.UserRepository
 import com.microsoft.attendancetracker.model.SessionManager
 import com.microsoft.attendancetracker.viewmodel.AuthViewModel
 

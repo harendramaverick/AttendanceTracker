@@ -25,11 +25,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
-import com.microsoft.attendancetracker.component.Logout
+import com.microsoft.attendancetracker.model.ThemePreferences
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
+import com.microsoft.attendancetracker.viewmodel.AttendanceViewModel
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 // ------------------------------------------------------------------------
 //               ACTIVITY (With Theme Toggle on Back Button)
@@ -38,16 +44,16 @@ class AttendanceReportActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AttendanceReportScreenMain()
+            val themeViewModel: ThemeViewModel = viewModel()
+            AttendanceReportScreenMain(themeViewModel)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AttendanceReportScreenMain()
+fun AttendanceReportScreenMain(themeViewModel: ThemeViewModel)
 {
-    val themeViewModel: ThemeViewModel = viewModel()
     val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     val context = LocalContext.current
     val activity = LocalContext.current as? Activity
@@ -89,106 +95,105 @@ fun AttendanceReportScreenMain()
 fun AttendanceReportScreen(modifier: Modifier = Modifier)
 {
     val context = LocalContext.current
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+    ) {
 
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
+       // Spacer(Modifier.height(120.dp))
+
+        // TITLE ---------------------------------------------------------------
+        Text(
+            "Filter Your Report",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(Modifier.height(20.dp))
+
+        // FILTERS -------------------------------------------------------------
+        FilterCard("Student", "All Students", R.drawable.ic_menu_myplaces)
+        Spacer(Modifier.height(14.dp))
+        FilterCard("Status", "All", R.drawable.ic_menu_sort_by_size)
+        Spacer(Modifier.height(14.dp))
+        FilterCard("Start Date", "01 Aug 2024", R.drawable.ic_menu_month)
+        Spacer(Modifier.height(14.dp))
+        FilterCard("End Date", "31 Aug 2024", R.drawable.ic_menu_month)
+
+        Spacer(Modifier.height(20.dp))
+
+        // GENERATE BUTTON -----------------------------------------------------
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            shape = RoundedCornerShape(12.dp)
         ) {
-
-           // Spacer(Modifier.height(120.dp))
-
-            // TITLE ---------------------------------------------------------------
-            Text(
-                "Filter Your Report",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            // FILTERS -------------------------------------------------------------
-            FilterCard("Student", "All Students", R.drawable.ic_menu_myplaces)
-            Spacer(Modifier.height(14.dp))
-            FilterCard("Status", "All", R.drawable.ic_menu_sort_by_size)
-            Spacer(Modifier.height(14.dp))
-            FilterCard("Start Date", "01 Aug 2024", R.drawable.ic_menu_month)
-            Spacer(Modifier.height(14.dp))
-            FilterCard("End Date", "31 Aug 2024", R.drawable.ic_menu_month)
-
-            Spacer(Modifier.height(20.dp))
-
-            // GENERATE BUTTON -----------------------------------------------------
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("🔁  Generate Report", fontSize = 18.sp)
-            }
-
-            Spacer(Modifier.height(28.dp))
-
-            // SUMMARY TITLE -------------------------------------------------------
-            Text(
-                "Report Summary",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            // SUMMARY CARDS -------------------------------------------------------
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                SummaryCard("Total Present", "18", Color(0xFF22C55E))
-                SummaryCard("Total Absent", "2", Color(0xFFFF9800))
-            }
-
-            Spacer(Modifier.height(14.dp))
-
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                SummaryCard("Total Late", "1", Color(0xFFFF9800))
-                SummaryCard("Attendance %", "90%", MaterialTheme.colorScheme.primary)
-            }
-
-            Spacer(Modifier.height(28.dp))
-
-            // BREAKDOWN TITLE -----------------------------------------------------
-            Text(
-                "Attendance Breakdown",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(Modifier.height(14.dp))
-
-            BreakdownCard()
-
-            Spacer(Modifier.height(28.dp))
-
-            // DETAILED RECORDS ----------------------------------------------------
-            Text(
-                "Detailed Records",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            StudentRow("Eleanor Pena", "August 29, 2024", "Present", Color(0xFF22C55E))
-            StudentRow("Cody Fisher", "August 28, 2024", "Absent", Color(0xFFFF9800))
-            StudentRow("Jacob Jones", "August 27, 2024", "Late", Color(0xFFFF5722))
-
-           // Spacer(Modifier.height(90.dp))
+            Text("🔁  Generate Report", fontSize = 18.sp)
         }
+
+        Spacer(Modifier.height(28.dp))
+
+        // SUMMARY TITLE -------------------------------------------------------
+        Text(
+            "Report Summary",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        // SUMMARY CARDS -------------------------------------------------------
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            SummaryCard("Total Present", "18", Color(0xFF22C55E))
+            SummaryCard("Total Absent", "2", Color(0xFFFF9800))
+        }
+
+        Spacer(Modifier.height(14.dp))
+
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            SummaryCard("Total Late", "1", Color(0xFFFF9800))
+            SummaryCard("Attendance %", "90%", MaterialTheme.colorScheme.primary)
+        }
+
+        Spacer(Modifier.height(28.dp))
+
+        // BREAKDOWN TITLE -----------------------------------------------------
+        Text(
+            "Attendance Breakdown",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(Modifier.height(14.dp))
+
+        BreakdownCard()
+
+        Spacer(Modifier.height(28.dp))
+
+        // DETAILED RECORDS ----------------------------------------------------
+        Text(
+            "Detailed Records",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        StudentRow("Eleanor Pena", "August 29, 2024", "Present", Color(0xFF22C55E))
+        StudentRow("Cody Fisher", "August 28, 2024", "Absent", Color(0xFFFF9800))
+        StudentRow("Jacob Jones", "August 27, 2024", "Late", Color(0xFFFF5722))
+
+       // Spacer(Modifier.height(90.dp))
+    }
 }
 
 

@@ -12,14 +12,14 @@ private val Context.dataStore by preferencesDataStore("settings")
 object ThemePreferences {
     private val DARK_THEME_KEY = booleanPreferencesKey("dark_theme")
 
-    fun isDarkTheme(context: Context): Flow<Boolean> {
-        return context.dataStore.data.map { prefs ->
+    fun isDarkTheme(context: Context?): Flow<Boolean> {
+        return context?.dataStore!!.data.map { prefs ->
             prefs[DARK_THEME_KEY] ?: false
         }
     }
 
-    suspend fun setDarkTheme(context: Context, value: Boolean) {
-        context.dataStore.edit { prefs ->
+    suspend fun setDarkTheme(context: Context?, value: Boolean) {
+        context?.dataStore!!.edit { prefs ->
             prefs[DARK_THEME_KEY] = value
         }
     }

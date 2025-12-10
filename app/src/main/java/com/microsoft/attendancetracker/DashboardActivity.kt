@@ -26,7 +26,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
-import com.microsoft.attendancetracker.component.Logout
+
 
 class DashboardActivity : ComponentActivity() {
 
