@@ -25,17 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
-import com.microsoft.attendancetracker.model.ThemePreferences
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
-import com.microsoft.attendancetracker.viewmodel.AttendanceViewModel
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 
 // ------------------------------------------------------------------------
 //               ACTIVITY (With Theme Toggle on Back Button)
@@ -44,17 +37,17 @@ class AttendanceReportActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val themeViewModel: ThemeViewModel = viewModel()
-            AttendanceReportScreenMain(themeViewModel)
+            AttendanceReportScreenMain()
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AttendanceReportScreenMain(themeViewModel: ThemeViewModel)
+fun AttendanceReportScreenMain()
 {
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val themeManager = ThemeManager(LocalContext.current)
+    val uDarkTheme by themeManager.themeFlow.collectAsState()
     val context = LocalContext.current
     val activity = LocalContext.current as? Activity
     Surface(modifier = Modifier.fillMaxSize()) {
@@ -354,7 +347,7 @@ fun StudentRow(name: String, date: String, status: String, color: Color) {
 @Composable
 fun PreviewLight() {
     AttendanceTrackerTheme(useDarkTheme = false){
-        AttendanceReportScreen()
+        AttendanceReportScreenMain()
     }
 }
 
@@ -362,6 +355,6 @@ fun PreviewLight() {
 @Composable
 fun PreviewDark() {
     AttendanceTrackerTheme(useDarkTheme = true) {
-        AttendanceReportScreen()
+        AttendanceReportScreenMain()
     }
 }

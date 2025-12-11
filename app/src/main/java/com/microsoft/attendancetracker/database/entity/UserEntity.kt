@@ -1,4 +1,4 @@
-package com.microsoft.attendancetracker.database
+package com.microsoft.attendancetracker.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

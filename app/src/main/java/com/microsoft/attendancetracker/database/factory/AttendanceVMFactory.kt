@@ -1,7 +1,8 @@
-package com.microsoft.attendancetracker.database
+package com.microsoft.attendancetracker.database.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.microsoft.attendancetracker.database.repository.AttendanceRepository
 import com.microsoft.attendancetracker.viewmodel.AttendanceViewModel
 
 class AttendanceVMFactory(
@@ -15,5 +16,3 @@ class AttendanceVMFactory(
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
 }
-
-

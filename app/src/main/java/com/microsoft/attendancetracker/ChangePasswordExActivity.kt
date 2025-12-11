@@ -20,14 +20,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 import android.widget.Toast
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.room.Room
 import com.microsoft.attendancetracker.database.AppDatabase
-import com.microsoft.attendancetracker.database.AuthRepository
-import com.microsoft.attendancetracker.database.AuthViewModelFactory
-import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.database.repository.ChangePasswordRepository
+import com.microsoft.attendancetracker.database.factory.ChangePasswordVMlFactory
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.AuthViewModel
 
@@ -35,8 +35,8 @@ class ChangePasswordExActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val themeViewModel: ThemeViewModel = viewModel()
-            val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+            val themeManager = ThemeManager(LocalContext.current)
+            val uDarkTheme by themeManager.themeFlow.collectAsState()
 
             val db = Room.databaseBuilder(
                 applicationContext,
@@ -44,8 +44,8 @@ class ChangePasswordExActivity : ComponentActivity() {
                 "attendance_database"
             ).build()
             val session = SessionManager(this)
-            val repository = AuthRepository(db.userDao(), session)
-            val factory = AuthViewModelFactory(repository)
+            val repository = ChangePasswordRepository(db.userDao(), session)
+            val factory = ChangePasswordVMlFactory(repository)
             val viewModel: AuthViewModel = viewModel(factory = factory)
 
             AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {

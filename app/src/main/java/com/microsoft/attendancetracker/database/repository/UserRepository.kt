@@ -1,6 +1,8 @@
-package com.microsoft.attendancetracker.database
+package com.microsoft.attendancetracker.database.repository
 
-import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.database.dao.UserDao
+import com.microsoft.attendancetracker.database.entity.UserEntity
 
 open class UserRepository(private val userDao: UserDao?, val sessionManager: SessionManager) {
 

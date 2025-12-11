@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.microsoft.attendancetracker.database.AuthRepository
+import com.microsoft.attendancetracker.database.repository.ChangePasswordRepository
 import kotlinx.coroutines.launch
 
-open class AuthViewModel(private val repository: AuthRepository?) : ViewModel() {
+open class AuthViewModel(private val repository: ChangePasswordRepository?) : ViewModel() {
 
     // UI state
     var isSuccess by mutableStateOf<Boolean?>(null)

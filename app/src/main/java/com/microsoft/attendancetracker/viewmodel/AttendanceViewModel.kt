@@ -2,8 +2,8 @@ package com.microsoft.attendancetracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.microsoft.attendancetracker.database.AttendanceEntity
-import com.microsoft.attendancetracker.database.AttendanceRepository
+import com.microsoft.attendancetracker.database.entity.AttendanceEntity
+import com.microsoft.attendancetracker.database.repository.AttendanceRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

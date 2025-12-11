@@ -25,17 +25,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.microsoft.attendancetracker.component.BottomNavBar
 import com.microsoft.attendancetracker.database.AppDatabase
-import com.microsoft.attendancetracker.database.AttendanceRepository
-import com.microsoft.attendancetracker.database.AttendanceVMFactory
+import com.microsoft.attendancetracker.database.repository.AttendanceRepository
+import com.microsoft.attendancetracker.database.factory.AttendanceVMFactory
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.AttendanceViewModel
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.data.ThemeManager
 
 
 class AttendanceActivity : ComponentActivity() {
@@ -49,7 +50,8 @@ class AttendanceActivity : ComponentActivity() {
             AppDatabase::class.java,
             "attendance_database"
         ).build()
-        val repo = AttendanceRepository(db.AttendanceDao())
+        val session = SessionManager(this)
+        val repo = AttendanceRepository(db.AttendanceDao(), session)
         val vmFactory = AttendanceVMFactory(repo)
         setContent {
             val attendenceVM: AttendanceViewModel = viewModel(factory = vmFactory)
@@ -64,8 +66,8 @@ class AttendanceActivity : ComponentActivity() {
 fun AttendanceScreenMain(attendenceVM: AttendanceViewModel)
 {
     var iSCheckedInState by remember {  mutableStateOf(false) }
-    val themeViewModel: ThemeViewModel = viewModel()
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val themeManager = ThemeManager(LocalContext.current)
+    val uDarkTheme by themeManager.themeFlow.collectAsState()
 
     attendenceVM.loadTodayRecord()
 

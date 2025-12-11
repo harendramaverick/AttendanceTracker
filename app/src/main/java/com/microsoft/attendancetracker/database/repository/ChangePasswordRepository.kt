@@ -1,8 +1,9 @@
-package com.microsoft.attendancetracker.database
+package com.microsoft.attendancetracker.database.repository
 
-import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.database.dao.UserDao
 
-class AuthRepository(
+class ChangePasswordRepository(
     private val userDao: UserDao,
     private val sessionManager: SessionManager
 ) {

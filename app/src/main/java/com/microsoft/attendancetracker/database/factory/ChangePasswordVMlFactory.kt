@@ -1,11 +1,12 @@
-package com.microsoft.attendancetracker.database
+package com.microsoft.attendancetracker.database.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.microsoft.attendancetracker.database.repository.ChangePasswordRepository
 import com.microsoft.attendancetracker.viewmodel.AuthViewModel
 
-class AuthViewModelFactory(
-    private val repository: AuthRepository
+class ChangePasswordVMlFactory(
+    private val repository: ChangePasswordRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

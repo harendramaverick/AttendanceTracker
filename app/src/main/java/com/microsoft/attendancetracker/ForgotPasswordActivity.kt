@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class ForgotPasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +35,10 @@ class ForgotPasswordActivity : ComponentActivity() {
 @Composable
 fun ForgetPasswordDetails()
 {
-    val themeViewModel: ThemeViewModel = viewModel()
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     val activity = LocalContext.current as? Activity
+    val themeManager = ThemeManager(LocalContext.current)
+    val uDarkTheme by themeManager.themeFlow.collectAsState()
+
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
         ForgotPasswordScreen(
             onBack = { activity?.finish() }

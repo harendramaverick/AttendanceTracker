@@ -2,8 +2,8 @@ package com.microsoft.attendancetracker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.microsoft.attendancetracker.database.UserEntity
-import com.microsoft.attendancetracker.database.UserRepository
+import com.microsoft.attendancetracker.database.entity.UserEntity
+import com.microsoft.attendancetracker.database.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -11,8 +11,6 @@ import kotlinx.coroutines.launch
 
 
 open class LoginViewModel(private val repository: UserRepository?) : ViewModel() {
-
-    val sessionManager = repository?.sessionManager
 
     private val _loginSuccess = MutableStateFlow(false)
     val loginSuccess = _loginSuccess.asStateFlow()

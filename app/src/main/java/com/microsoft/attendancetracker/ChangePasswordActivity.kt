@@ -18,6 +18,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.platform.LocalContext
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 
 // ─────────────────────────────────────────────────────────────
@@ -26,17 +28,15 @@ import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 
 class ChangePasswordActivity : ComponentActivity() {
 
-    private var isDarkTheme by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AttendanceTrackerTheme(useDarkTheme = isDarkTheme) {
-
-                ChangePasswordScreen(
-                    onToggleTheme = { isDarkTheme = !isDarkTheme }
-                )
+            val themeManager = ThemeManager(LocalContext.current)
+            val uDarkTheme by themeManager.themeFlow.collectAsState()
+            AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
+                ChangePasswordScreen()
             }
         }
     }
@@ -47,9 +47,7 @@ class ChangePasswordActivity : ComponentActivity() {
 // ─────────────────────────────────────────────────────────────
 
 @Composable
-fun ChangePasswordScreen(
-    onToggleTheme: () -> Unit
-) {
+fun ChangePasswordScreen() {
 
     var currentPassword by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -115,7 +113,7 @@ fun ChangePasswordScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = onToggleTheme,
+                onClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)//,
@@ -226,7 +224,7 @@ fun passwordStrength(password: String): PasswordStrength {
 @Composable
 fun PreviewLightChangePassword() {
     AttendanceTrackerTheme(useDarkTheme = false) {
-        ChangePasswordScreen(onToggleTheme = {})
+        ChangePasswordScreen()
     }
 }
 
@@ -234,6 +232,6 @@ fun PreviewLightChangePassword() {
 @Composable
 fun PreviewDarkChangePassword() {
     AttendanceTrackerTheme(useDarkTheme = true) {
-        ChangePasswordScreen(onToggleTheme = {})
+        ChangePasswordScreen()
     }
 }

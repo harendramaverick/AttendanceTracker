@@ -1,8 +1,7 @@
-package com.microsoft.attendancetracker.model
+package com.microsoft.attendancetracker.data
 
 
 import android.content.Context
-import android.content.SharedPreferences
 
 class SessionManager(context: Context) {
     private val prefs = context.getSharedPreferences("user_session", Context.MODE_PRIVATE)

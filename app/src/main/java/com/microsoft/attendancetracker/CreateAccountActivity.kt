@@ -30,12 +30,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.database.AppDatabase
-import com.microsoft.attendancetracker.database.CreateAccountVMFactory
+import com.microsoft.attendancetracker.database.factory.CreateAccountVMFactory
 import com.microsoft.attendancetracker.viewmodel.CreateAccountViewModel
-import com.microsoft.attendancetracker.database.UserRepository
-import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.database.repository.UserRepository
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class CreateAccountActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,8 +68,8 @@ class CreateAccountActivity : ComponentActivity() {
 @Composable
 fun CreateAccountMainScreen(viewModel: CreateAccountViewModel)
 {
-    val themeViewModel: ThemeViewModel = viewModel()
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val themeManager = ThemeManager(LocalContext.current)
+    val uDarkTheme by themeManager.themeFlow.collectAsState()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
         CreateAccountScreen(viewModel)
     }

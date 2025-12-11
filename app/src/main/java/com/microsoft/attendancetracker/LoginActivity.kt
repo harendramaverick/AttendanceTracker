@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.microsoft.attendancetracker.database.AppDatabase
-import com.microsoft.attendancetracker.database.LoginVMFactory
-import com.microsoft.attendancetracker.database.UserRepository
-import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.database.factory.LoginVMFactory
+import com.microsoft.attendancetracker.database.repository.UserRepository
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.LoginViewModel
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class LoginActivity : ComponentActivity() {
 
@@ -54,8 +54,9 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun LoginMainScreen (viewModel: LoginViewModel)
 {
-    val themeViewModel: ThemeViewModel = viewModel()
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val themeManager = ThemeManager(LocalContext.current)
+    val uDarkTheme by themeManager.themeFlow.collectAsState()
+
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme) {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -177,16 +178,17 @@ class FakeLoginViewModel : LoginViewModel(null) {
     }
 }
 
-val loginVM: FakeLoginViewModel = FakeLoginViewModel();
+
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginLight() {
+    val loginVM: FakeLoginViewModel = viewModel();
     AttendanceTrackerTheme(useDarkTheme = false) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginMainScreen(loginVM)
+            LoginScreen(loginVM)
         }
     }
 }
@@ -194,11 +196,12 @@ fun PreviewLoginLight() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewLoginDark() {
+    val loginVM: FakeLoginViewModel = viewModel();
     AttendanceTrackerTheme(useDarkTheme = true) {
         Surface(modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background)
         {
-            LoginMainScreen(loginVM)
+            LoginScreen(loginVM)
         }
     }
 }

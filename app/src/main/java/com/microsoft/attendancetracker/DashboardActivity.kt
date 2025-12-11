@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 import com.microsoft.attendancetracker.component.BottomNavBar
+import com.microsoft.attendancetracker.data.ThemeManager
 
 
 class DashboardActivity : ComponentActivity() {
@@ -41,8 +41,8 @@ class DashboardActivity : ComponentActivity() {
 @Composable
 fun DashboardMainScreen()
 {
-    val themeViewModel: ThemeViewModel = viewModel()
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
+    val themeManager = ThemeManager(LocalContext.current)
+    val uDarkTheme by themeManager.themeFlow.collectAsState()
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
     {
         DashboardScreen()

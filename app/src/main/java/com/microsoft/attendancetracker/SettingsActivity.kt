@@ -31,13 +31,12 @@ import androidx.room.Room
 import com.microsoft.attendancetracker.component.BottomNavBar
 import com.microsoft.attendancetracker.component.Logout
 import com.microsoft.attendancetracker.database.AppDatabase
-import com.microsoft.attendancetracker.database.LoginVMFactory
-import com.microsoft.attendancetracker.database.UserEntity
-import com.microsoft.attendancetracker.database.UserRepository
-import com.microsoft.attendancetracker.model.SessionManager
+import com.microsoft.attendancetracker.database.factory.LoginVMFactory
+import com.microsoft.attendancetracker.database.repository.UserRepository
+import com.microsoft.attendancetracker.data.SessionManager
+import com.microsoft.attendancetracker.data.ThemeManager
 import com.microsoft.attendancetracker.ui.theme.AttendanceTrackerTheme
 import com.microsoft.attendancetracker.viewmodel.LoginViewModel
-import com.microsoft.attendancetracker.viewmodel.ThemeViewModel
 
 class SettingsActivity : ComponentActivity() {
 
@@ -54,9 +53,11 @@ class SettingsActivity : ComponentActivity() {
         val vmFactory = LoginVMFactory(repo)
         setContent {
             val loginVM: LoginViewModel = viewModel(factory = vmFactory)
-            val email: String? = loginVM.sessionManager?.getLoginEmail()
+            val email: String? = session.getLoginEmail()
             loginVM.getUserRecord(email)
-            SettingScreenView(loginVM)
+            val themeManager = ThemeManager(this)
+            val uDarkTheme by themeManager.themeFlow.collectAsState()
+            SettingScreenView(loginVM, uDarkTheme, onToggleTheme = { newTheme -> themeManager.setThemeType(newTheme)})
         }
     }
 }
@@ -64,10 +65,8 @@ class SettingsActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreenView( loginVM: LoginViewModel)
+fun SettingScreenView( loginVM: LoginViewModel, uDarkTheme: Boolean, onToggleTheme: (Boolean) -> Unit)
 {
-    val themeViewModel: ThemeViewModel = viewModel()
-    val uDarkTheme by themeViewModel.isDarkTheme.collectAsState()
     val context = LocalContext.current
     val activity = LocalContext.current as? Activity
     AttendanceTrackerTheme(useDarkTheme = uDarkTheme)
@@ -97,10 +96,7 @@ fun SettingScreenView( loginVM: LoginViewModel)
             padding ->
             SettingsScreen(
                 darkTheme = uDarkTheme,
-                onThemeToggle = {
-                    themeViewModel.toggleTheme()
-                    Log.d("SettingsActivity", "Theme toggled: $uDarkTheme")
-                },
+                onToggleTheme = onToggleTheme,
                 modifier = Modifier.padding(padding),
                 loginVM
             )
@@ -109,11 +105,13 @@ fun SettingScreenView( loginVM: LoginViewModel)
 }
 
 
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     darkTheme: Boolean,
-    onThemeToggle: () -> Unit,
+    onToggleTheme: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     loginVM: LoginViewModel
 ) {
@@ -147,7 +145,7 @@ fun SettingsScreen(
                 item { ToggleRow("Reminder Alerts") }
 
                 item { SectionTitle("APP") }
-                item { ThemeRow(darkTheme, onThemeToggle) }
+                item { ThemeRow(darkTheme, onToggleTheme) }
                 item { Divider() }
                 item { DropdownRow("Default View", "Calendar") }
 
@@ -310,11 +308,11 @@ fun DropdownRow(label: String, value: String) {
 }
 
 @Composable
-fun ThemeRow(darkTheme: Boolean, onToggle: () -> Unit) {
+fun ThemeRow(darkTheme: Boolean,  onToggleTheme: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onToggle() }
+            .clickable { onToggleTheme(!darkTheme) }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -348,13 +346,12 @@ fun LogoutButton() {
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
 fun PreviewSettingsLight() {
-    val loginVM: FakeLoginViewModel = FakeLoginViewModel();
     AttendanceTrackerTheme(useDarkTheme = false){
-        SettingsScreen(
-            darkTheme = false,
-            onThemeToggle = {},
-            Modifier.padding(10.dp),
-            loginVM
+        val loginVM: FakeLoginViewModel = viewModel();
+        SettingScreenView(
+            loginVM,
+            false,
+            onToggleTheme = {}
         )
     }
 }
@@ -362,13 +359,12 @@ fun PreviewSettingsLight() {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark Mode")
 @Composable
 fun PreviewSettingsDark() {
-    val loginVM: FakeLoginViewModel = FakeLoginViewModel();
+    val loginVM: FakeLoginViewModel = viewModel();
     AttendanceTrackerTheme(useDarkTheme = true) {
-        SettingsScreen(
-            darkTheme = true,
-            onThemeToggle = {},
-            Modifier.padding(10.dp),
-            loginVM
+        SettingScreenView(
+            loginVM,
+            true,
+            onToggleTheme = {}
         )
     }
 }
